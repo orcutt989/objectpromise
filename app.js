@@ -1,3 +1,4 @@
+
 // Replace with your Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyBvbXJ4p4u3Nf9DZMk556GRqhwGPoIdCQQ",
@@ -11,10 +12,24 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
-const analytics = firebase.analytics;
+// Check if analytics is available before initializing
+if ('analytics' in firebase) {
+    const analytics = firebase.analytics();
+}
 
 // Reference to the Firestore database
-const db = firebase.firestore();
+const db = app.firestore();
+
+// Initialize Firebase with Anonymous Authentication
+firebase.auth().signInAnonymously()
+    .then(() => {
+        // Anonymous authentication successful
+        console.log("Anonymous authentication successful");
+    })
+    .catch((error) => {
+        // Handle errors during anonymous authentication
+        console.error("Error during anonymous authentication:", error);
+    });
 
 document.addEventListener("DOMContentLoaded", function () {
     const gameBox = document.getElementById("game-box");
@@ -30,6 +45,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to generate a consistent username based on IP and user agent
     async function generateUsername() {
+
+        // Check if the user is authenticated
+        const user = firebase.auth().currentUser;
+
+        if (user) {
+            // User is authenticated, obtain UID
+            const uid = user.uid;
+
+            // Rest of the function remains unchanged
+            // Use the UID to customize the username generation if needed
+        } else {
+            // User is not authenticated, handle accordingly
+            console.warn("User is not authenticated.");
+            // Handle anonymous user or fallback
+        }
+
         const adjectives = ["Absolute", "Abstract", "Abyssal", "Adorable", "Adventurous", "Angry", "Agreeable", "Awful", "Bad", "Basic", "Based", "Better", "Billionaire", "Bizarre", "Blushing", "Bored", "Brave", "Chaotic", "Charming", "Cheeky", "Cheerful", "Clever", "Crusty", "Cryptic", "Curious", "Dank", "Dark", "Defiant", "Dizzy", "Eager", "Embarrassed", "Energetic", "Excited", "Famous", "Fierce", "Filthy", "Fluffy", "Foolish", "Friendly", "Funny", "Glamorous", "Gnarly", "Goofy", "Gothic", "Groovy", "Grumpy", "Helpful", "Hilarious", "Hungry", "Imaginary", "Important", "Innocent", "Itchy", "Jealous", "Jolly", "Juicy", "Lethal", "Lit", "Lively", "Lovely", "Lucky", "Meaty", "Memetic", "Moist", "Mushy", "Nasty", "Natural", "Normcore", "Nostalgic", "Orbular", "Outgoing", "Perfect", "Powerful", "Prickly", "Puzzled", "Quantum", "Quirky", "Reckless", "Regal", "Relativistic", "Retro", "Rusty", "Salty", "Scary", "Scrumptuous", "Shiny", "Sigma", "Silly", "Sloppy", "Super", "Tasty", "Toasty", "Trendy", "True", "Turbo", "Unusual", "Ultra", "Victorious", "Witty", "Zealous"];
         const nouns = ["Abacus", "Adventure", "Anarchoegoist", "Android", "Anticapitalist", "Arch", "Battlepass", "Bean", "Berserker", "Bingus", "Blender", "Brandon", "Bread", "Carrot", "Cat", "Cloud", "Clummster", "Coffee", "Company", "Comrade", "Cookie", "Crab", "Crane", "Creed", "Custard", "Cyborg", "Dentist", "Dirt", "Dongle", "Dragon", "Egg", "Entity", "Fairy", "Flamingo", "Fork", "Fossil", "Frog", "Fungus", "Gamer", "Gender", "Goblin", "Grindset", "Herb", "Hippie", "Humbler", "Illusion", "Jellyfish", "Joker", "Kangaroo", "Ketchup", "Koala", "Kolache", "Laborer", "Landmine", "Lemonade", "Lumpenprole", "Mascot", "Mayonnaise", "Meme", "Monk", "Mushroom", "Ninja", "Noodle", "Obelisk", "Object", "Orb", "Outlaw", "Panda", "Paperclip", "Pendulum", "Pierogi", "Pizza", "Potion", "Promise", "Q-tip", "Rebel", "Rizzler", "Robot", "Sauce", "Socialist", "Slug", "Soda", "Soup", "Spoon", "Stinker", "Sword", "Taco", "Theory", "Toast", "Tornado", "Troll", "Unit", "Villager", "Virus", "Wiggler", "Wickhead", "Wizard", "Xenomorph", "Zammy", "Zebra"];
 
@@ -37,9 +68,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const ip = await getUserIP();
         const inputString = `${ip}${navigator.userAgent}`;
         
-        // Replace the usage of crypto with crypto-js
-        const hash = CryptoJS.SHA256(inputString);
-        const hashHex = hash.toString(CryptoJS.enc.Hex);
+        // Use the hash to determine indices for adjective and noun
+        const hashBuffer = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(inputString));
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         // Use the hash to determine indices for adjective and noun
         const adjectiveIndex = parseInt(hashHex.substr(0, 8), 16) % adjectives.length;
