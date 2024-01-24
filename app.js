@@ -67,13 +67,13 @@ document.addEventListener("DOMContentLoaded", function () {
     async function updateScoresList() {
         const scoresList = document.getElementById("scores-list");
         scoresList.innerHTML = "";
-
+    
         // Fetch scores from Firestore in descending order based on timestamp
         const querySnapshot = await db.collection("scores").orderBy("timestamp", "desc").get();
-
+    
         querySnapshot.forEach((doc) => {
             const listItem = document.createElement("li");
-            listItem.textContent = `Score: ${doc.data().score}`;
+            listItem.textContent = `${doc.data().username}, Score: ${doc.data().score}`;
             scoresList.appendChild(listItem);
         });
     }
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function endGame() {
         clearInterval(timerInterval);
-
+    
         const popup = document.createElement("div");
         popup.classList.add("popup");
         popup.innerHTML = `
@@ -126,19 +126,20 @@ document.addEventListener("DOMContentLoaded", function () {
             <button onclick="resetGame()">Play Again</button>
         `;
         document.body.appendChild(popup);
-
+    
         gameActive = false;
-
-        // Save the current score to Firestore with a timestamp
+    
+        // Save the current score and username to Firestore with a timestamp
         db.collection("scores").add({
+            username: initialUsername,
             score: score,
             timestamp: firebase.firestore.FieldValue.serverTimestamp()
         });
-
+    
         // Update the list of scores
         updateScoresList();
     }
-
+    
 window.resetGame = async function () {
     console.log("Resetting game...");
 
