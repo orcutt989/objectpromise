@@ -36,20 +36,17 @@ document.addEventListener("DOMContentLoaded", function () {
         // Use IP and user agent as input to generate a hash
         const ip = await getUserIP();
         const inputString = `${ip}${navigator.userAgent}`;
-        const hashBuffer = new TextEncoder().encode(inputString);
-        const hashArray = await crypto.subtle.digest("SHA-256", hashBuffer);
-
-        // Convert the hash to a hexadecimal string
-        const hashHex = Array.from(new Uint8Array(hashArray))
-            .map(byte => byte.toString(16).padStart(2, '0'))
-            .join('');
+        
+        // Replace the usage of crypto with crypto-js
+        const hash = CryptoJS.SHA256(inputString);
+        const hashHex = hash.toString(CryptoJS.enc.Hex);
 
         // Use the hash to determine indices for adjective and noun
         const adjectiveIndex = parseInt(hashHex.substr(0, 8), 16) % adjectives.length;
         const nounIndex = parseInt(hashHex.substr(8, 8), 16) % nouns.length;
 
         return `${adjectives[adjectiveIndex]}${nouns[nounIndex]}`;
-}
+    }
 
     // Create the username display element
     const usernameDisplay = document.createElement("div");
