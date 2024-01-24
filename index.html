@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-1T90DQS163"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-1T90DQS163');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Game</title>
+    <style>
+        #game-box {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: blue;
+        }
+
+        .red-box {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background-color: red;
+            cursor: pointer;
+        }
+
+        #timer-display {
+            position: fixed;
+            top: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #fff;
+            border: 2px solid #000;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Include Firebase SDK -->
+    <script defer src="https://www.gstatic.com/firebasejs/9.5.0/firebase-app-compat.js"></script>
+    <script defer src="https://www.gstatic.com/firebasejs/9.5.0/firebase-firestore-compat.js"></script>
+    <script defer src="./app.js"></script>
+    <div id="game-box"></div>
+    <div id="score-display"></div>
+    <div id="timer-display"></div>
+    <div id="scores-container" style="position: fixed; top: 10px; right: 10px;">
+        <h2>Scores</h2>
+        <ul id="scores-list"></ul>
+    </div>
+    <!-- Add this container for red boxes -->
+    <div id="red-boxes-container"></div>
+    <!-- Include any other scripts that use functions from app.js -->
+    <script>
+        // Ensure that the restartGame function is called after app.js is loaded
+        function playAgain() {
+            restartGame();
+        }
+    </script>
+</body>
+</html>
