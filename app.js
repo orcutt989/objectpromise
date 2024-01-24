@@ -121,24 +121,38 @@ document.addEventListener("DOMContentLoaded", function () {
     
         const popup = document.createElement("div");
         popup.classList.add("popup");
-        popup.innerHTML = `
-            <p>Your Score: ${score}</p>
-            <button onclick="resetGame()">Play Again</button>
-        `;
+        
+        if (score > 0) {
+            popup.innerHTML = `
+                <p>Your Score: ${score}</p>
+                <button onclick="saveAndReset()">Play Again</button>
+            `;
+        } else {
+            popup.innerHTML = `
+                <p>Your Score: 0</p>
+                <button onclick="resetGame()">Play Again</button>
+            `;
+        }
+    
         document.body.appendChild(popup);
-    
         gameActive = false;
-    
-        // Save the current score and username to Firestore with a timestamp
-        db.collection("scores").add({
-            username: initialUsername,
-            score: score,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-    
-        // Update the list of scores
-        updateScoresList();
     }
+    
+// Add a new function to save the score and reset the game
+window.saveAndReset = async function () {
+    // Save the current score to Firestore with a timestamp
+    await db.collection("scores").add({
+        username: initialUsername, // Add the username field
+        score: score,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Update the list of scores
+    updateScoresList();
+
+    // Reset the game
+    resetGame();
+};
     
 window.resetGame = async function () {
     console.log("Resetting game...");
