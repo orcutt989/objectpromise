@@ -11,7 +11,7 @@
     gtag('config', 'G-1T90DQS163');
     </script>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Simple Game</title>
     <style>
         #game-box {
@@ -19,23 +19,25 @@
             width: 10px;
             height: 10px;
             background-color: blue;
+            z-index: 1; /* Set z-index to 1 to place it above the red boxes */
         }
-
+    
         .red-box {
             position: absolute;
             width: 10px;
             height: 10px;
             background-color: red;
             cursor: pointer;
+            z-index: 0; /* Set z-index to 0 to place it below the blue box */
         }
-
+    
         #timer-display {
             position: fixed;
             top: 50px;
             left: 50%;
             transform: translateX(-50%);
         }
-
+    
         .popup {
             position: fixed;
             top: 50%;
@@ -45,6 +47,47 @@
             background-color: #fff;
             border: 2px solid #000;
             text-align: center;
+        }
+    
+        .arrow {
+            width: 30px;
+            height: 30px;
+            background-color: #ddd;
+            text-align: center;
+            line-height: 30px;
+            font-size: 20px;
+            position: absolute;
+            cursor: pointer;
+            color: black;
+        }
+    
+        #touch-controls {
+            position: fixed;
+            top: calc(2/3 * 100vh - 45px); /* Adjust this value for positioning */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #up-arrow {
+            top: calc(50% - 45px);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #down-arrow {
+            top: calc(50% + 15px); /* Adjust this value for positioning */
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #left-arrow {
+            top: calc(50% - 15px); /* Adjust this value for positioning */
+            left: calc(50% - 60px);
+        }
+
+        #right-arrow {
+            top: calc(50% - 15px); /* Adjust this value for positioning */
+            left: calc(50% + 30px);
         }
     </style>
 </head>
@@ -70,5 +113,11 @@
             restartGame();
         }
     </script>
+    <div id="touch-controls">
+        <div id="up-arrow" class="arrow">&#9650;</div>
+        <div id="down-arrow" class="arrow">&#9660;</div>
+        <div id="left-arrow" class="arrow">&#9668;</div>
+        <div id="right-arrow" class="arrow">&#9658;</div>
+    </div>
 </body>
 </html>

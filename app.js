@@ -43,6 +43,96 @@ document.addEventListener("DOMContentLoaded", function () {
     let timerInterval;
     let gameActive = true;
 
+    // Function to check if the device is a mobile device with touch
+    function isMobileDeviceWithTouch() {
+        return 'ontouchstart' in window || navigator.maxTouchPoints;
+    }
+
+    // Add touch controls only for mobile devices with touchscreens
+    if (isMobileDeviceWithTouch()) {
+        const touchControls = document.getElementById("touch-controls");
+        const upArrow = document.getElementById("up-arrow");
+        const downArrow = document.getElementById("down-arrow");
+        const leftArrow = document.getElementById("left-arrow");
+        const rightArrow = document.getElementById("right-arrow");
+
+        // Calculate the position for the touch controls
+        const windowHeight = window.innerHeight;
+        const bottomThird = windowHeight * (2 / 3);
+        const verticalCenter = windowHeight / 2;
+
+        // Set the position of touch controls
+        touchControls.style.position = "fixed";
+        touchControls.style.bottom = "0"; // Position at the top of the bottom third
+        touchControls.style.left = "50%";
+        touchControls.style.transform = "translate(-50%, 0%)"; // Adjust transform to center horizontally
+
+
+        // Add touch event listeners
+        upArrow.addEventListener("touchstart", (event) => {
+            console.log("Up arrow touched");
+            event.preventDefault();
+            handleTouchControl("up")
+        });
+        downArrow.addEventListener("touchstart", (event) => {
+            console.log("Down arrow touched");
+            event.preventDefault();
+            handleTouchControl("down")
+        });
+        leftArrow.addEventListener("touchstart", (event) => {
+            console.log("Left arrow touched");
+            event.preventDefault();
+            handleTouchControl("left")
+        });
+        rightArrow.addEventListener("touchstart", (event) => {
+            console.log("Right arrow touched");
+            event.preventDefault();
+            handleTouchControl("right")
+        });
+
+        // Add touch move listeners
+        upArrow.addEventListener("touchmove", (event) => {
+            event.preventDefault();
+        });
+        downArrow.addEventListener("touchmove", (event) => {
+            event.preventDefault();
+        });
+        leftArrow.addEventListener("touchmove", (event) => {
+            event.preventDefault();
+        });
+        rightArrow.addEventListener("touchmove", (event) => {
+            event.preventDefault();
+        });
+        
+        // Function to handle touch controls
+        function handleTouchControl(direction) {
+            const boxSize = 10;
+            const maxX = window.innerWidth - boxSize;
+            const maxY = window.innerHeight - boxSize;
+
+            switch (direction) {
+                case "up":
+                    posY = Math.max(0, posY - 10);
+                    break;
+                case "down":
+                    posY = Math.min(maxY, posY + 10);
+                    break;
+                case "left":
+                    posX = Math.max(0, posX - 10);
+                    break;
+                case "right":
+                    posX = Math.min(maxX, posX + 10);
+                    break;
+            }
+
+            updatePosition();
+        }
+    } else {
+        // If not a mobile device, hide touch controls
+        const touchControls = document.getElementById("touch-controls");
+        touchControls.style.display = "none";
+    }
+
     // Function to generate a consistent username based on IP and user agent
     async function generateUsername() {
 
@@ -110,6 +200,15 @@ document.addEventListener("DOMContentLoaded", function () {
     function updatePosition() {
         gameBox.style.left = posX + "px";
         gameBox.style.top = posY + "px";
+    
+        // Check for collisions with red boxes
+        document.querySelectorAll(".red-box").forEach((redBox) => {
+            if (checkCollision(redBox)) {
+                document.body.removeChild(redBox);
+                score++;
+                updateScore();
+            }
+        });
     }
 
     function createRedBox() {
