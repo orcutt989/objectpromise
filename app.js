@@ -45,7 +45,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to check if the device is a mobile device with touch
     function isMobileDeviceWithTouch() {
-        return 'ontouchstart' in window || navigator.maxTouchPoints;
+        const regex = /Mobi|Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i;
+        return regex.test(navigator.userAgent);
     }
 
     // Add touch controls only for mobile devices with touchscreens
