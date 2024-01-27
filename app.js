@@ -12,6 +12,7 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
+const auth = app.auth();
 // Check if analytics is available before initializing
 if ('analytics' in firebase) {
     const analytics = firebase.analytics();
@@ -30,6 +31,14 @@ firebase.auth().signInAnonymously()
         // Handle errors during anonymous authentication
         console.error("Error during anonymous authentication:", error);
     });
+
+// Initialize Firebase with App Check
+if ('appCheck' in firebase) {
+    const appCheck = firebase.appCheck();
+    
+    // Example: Activate App Check with the received reCAPTCHA token
+    appCheck.activate('6LftblwpAAAAALstQQwQh5TKctuMzaOpfORHVfro');
+}
 
 document.addEventListener("DOMContentLoaded", function () {
     const gameBox = document.getElementById("game-box");
