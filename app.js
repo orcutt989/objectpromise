@@ -1,5 +1,3 @@
-
-// Replace with your Firebase config
 const firebaseConfig = {
     apiKey: "AIzaSyBvbXJ4p4u3Nf9DZMk556GRqhwGPoIdCQQ",
     authDomain: "move-high-scores.firebaseapp.com",
